@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rakshith S.K. — builds RAG pipelines &amp; agentic systems</title>
+<meta name="description" content="Rakshith Sriraman Krishnaraj — MS CS @ UW-Madison. I build multi-agent RAG systems, distributed data pipelines, and the occasional Kafka streaming rig." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ink: #0f0f0c;
+    --paper: #f4efe6;
+    --paper-deep: #e8e0d0;
+    --accent: #ff5a1f;
+    --accent-soft: #ffd7c4;
+    --green: #2d5f3f;
+    --blue: #1f3a8a;
+    --yellow: #f5c518;
+    --rule: #0f0f0c;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: "SOFT" 30, "WONK" 0;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.5;
+    overflow-x: hidden;
+    /* paper grain */
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(15,15,12,0.08) 1px, transparent 0);
+    background-size: 3px 3px;
+  }
+
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .italic-serif { font-family: 'Instrument Serif', serif; font-style: italic; }
+
+  /* ========== STICKY TOP BAR ========== */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom: 2px solid var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+  .topbar-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 10px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .topbar a { color: var(--paper); text-decoration: none; opacity: 0.75; transition: opacity 0.15s; }
+  .topbar a:hover { opacity: 1; color: var(--accent); }
+  .topbar .brand { color: var(--accent); font-weight: 700; }
+  .topbar .status-dot {
+    display: inline-block; width: 8px; height: 8px;
+    background: var(--yellow); border-radius: 50%;
+    margin-right: 6px; animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ========== HERO ========== */
+  .hero {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 60px 32px 40px;
+    position: relative;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 60px;
+    align-items: end;
+  }
+
+  .issue-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--ink);
+    margin-bottom: 32px;
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 50, "WONK" 1, "opsz" 144;
+    font-weight: 400;
+    font-size: clamp(56px, 9vw, 148px);
+    line-height: 0.88;
+    letter-spacing: -0.04em;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 .accent {
+    color: var(--accent);
+    font-style: italic;
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+  }
+
+  .hero h1 .strike {
+    position: relative;
+    display: inline-block;
+  }
+  .hero h1 .strike::after {
+    content: '';
+    position: absolute;
+    left: -4px; right: -4px;
+    top: 52%;
+    height: 5px;
+    background: var(--accent);
+    transform: rotate(-1.5deg);
+  }
+
+  .hero-sub {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(18px, 2vw, 24px);
+    font-style: italic;
+    max-width: 640px;
+    line-height: 1.4;
+    color: #2a2a25;
+  }
+
+  .hero-card {
+    border: 2px solid var(--ink);
+    padding: 20px;
+    background: var(--paper-deep);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    position: relative;
+    transform: rotate(1deg);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .hero-card::before {
+    content: 'CURRENTLY';
+    position: absolute;
+    top: -10px; left: 16px;
+    background: var(--accent);
+    color: var(--paper);
+    padding: 2px 10px;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+  }
+  .hero-card ul { list-style: none; }
+  .hero-card li {
+    padding: 6px 0;
+    border-bottom: 1px dashed rgba(15,15,12,0.3);
+    display: flex;
+    gap: 8px;
+  }
+  .hero-card li:last-child { border: none; }
+  .hero-card li .bullet { color: var(--accent); }
+
+  /* floating tags */
+  .tag-swarm {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+  .tag {
+    padding: 4px 10px;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    background: var(--paper);
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .tag:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+  .tag.filled { background: var(--accent); color: var(--paper); border-color: var(--accent); }
+
+  /* ========== SECTION FRAME ========== */
+  .section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 80px 32px;
+    border-bottom: 2px solid var(--ink);
+    position: relative;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::before {
+    content: '';
+    width: 30px; height: 1px;
+    background: var(--ink);
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 50, "WONK" 1, "opsz" 144;
+    font-size: clamp(42px, 6vw, 84px);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 48px;
+    max-width: 900px;
+  }
+  .section-title em {
+    font-family: 'Instrument Serif', serif;
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  /* ========== ABOUT ========== */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+  .about-prose {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    line-height: 1.55;
+    max-width: 620px;
+  }
+  .about-prose p { margin-bottom: 20px; }
+  .about-prose .pull {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 28px;
+    line-height: 1.3;
+    border-left: 3px solid var(--accent);
+    padding: 4px 0 4px 20px;
+    margin: 28px 0;
+    color: #2a2a25;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .stat {
+    border: 2px solid var(--ink);
+    padding: 20px;
+    background: var(--paper);
+    position: relative;
+    transition: transform 0.2s;
+  }
+  .stat:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--ink); }
+  .stat:nth-child(2n) { background: var(--paper-deep); }
+  .stat:nth-child(3) { transform: rotate(-0.5deg); }
+  .stat:nth-child(2) { transform: rotate(0.5deg); }
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 50, "WONK" 1;
+    font-size: 48px;
+    line-height: 1;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .stat-desc {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 14px;
+    margin-top: 4px;
+    color: #555;
+  }
+
+  /* ========== WORK / PROJECTS ========== */
+  .work-item {
+    display: grid;
+    grid-template-columns: 80px 1fr 220px;
+    gap: 32px;
+    padding: 32px 0;
+    border-top: 1px solid rgba(15,15,12,0.2);
+    align-items: start;
+    transition: background 0.2s, padding 0.2s;
+  }
+  .work-item:hover {
+    background: var(--paper-deep);
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .work-item:hover .work-arrow { transform: translateX(8px); }
+  .work-index {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #888;
+    padding-top: 4px;
+  }
+  .work-main h3 {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 40, "WONK" 1;
+    font-size: clamp(28px, 3.5vw, 44px);
+    line-height: 1;
+    font-weight: 500;
+    margin-bottom: 12px;
+    letter-spacing: -0.02em;
+  }
+  .work-main h3 em {
+    font-family: 'Instrument Serif', serif;
+    color: var(--accent);
+    font-weight: 400;
+  }
+  .work-desc {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    line-height: 1.5;
+    max-width: 560px;
+    color: #2a2a25;
+    margin-bottom: 12px;
+  }
+  .work-stack {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #666;
+  }
+  .work-meta {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+  .work-year {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .work-role {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: #555;
+  }
+  .work-arrow {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 18px;
+    transition: transform 0.2s;
+  }
+
+  /* ========== RAG PIPELINE VIS ========== */
+  .pipeline-wrap {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    padding: 32px;
+    margin-top: 40px;
+    position: relative;
+    box-shadow: 8px 8px 0 var(--ink);
+  }
+  .pipeline-wrap::before {
+    content: 'FIG. 01 — RAG INGESTION PIPELINE @ ACCENTURE';
+    position: absolute;
+    top: -12px; left: 24px;
+    background: var(--paper);
+    padding: 0 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+  }
+  .pipeline-caption {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: #555;
+    margin-top: 16px;
+    text-align: center;
+  }
+
+  .pipeline-flow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 20px 0;
+  }
+  .node {
+    flex-shrink: 0;
+    min-width: 110px;
+    padding: 14px 10px;
+    text-align: center;
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    position: relative;
+    transition: all 0.25s;
+    cursor: default;
+  }
+  .node:hover {
+    background: var(--accent);
+    color: var(--paper);
+    transform: translateY(-3px);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .node .n-icon {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+  .node .n-sub {
+    display: block;
+    font-size: 9px;
+    color: #888;
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+  .node:hover .n-sub { color: var(--paper-deep); }
+  .node.accent { background: var(--accent); color: var(--paper); }
+  .node.accent .n-sub { color: var(--paper-deep); }
+  .arrow {
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: var(--ink);
+    opacity: 0.6;
+    animation: arrow-pulse 2.5s infinite;
+  }
+  @keyframes arrow-pulse {
+    0%, 100% { opacity: 0.3; transform: translateX(0); }
+    50% { opacity: 1; transform: translateX(3px); }
+  }
+
+  /* ========== AGENTS GRID ========== */
+  .agents-intro {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    line-height: 1.55;
+    max-width: 720px;
+    margin-bottom: 40px;
+  }
+  .agents-intro em {
+    font-family: 'Instrument Serif', serif;
+    color: var(--accent);
+  }
+  .agent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .agent {
+    border: 2px solid var(--ink);
+    padding: 20px;
+    background: var(--paper);
+    position: relative;
+    transition: all 0.2s;
+  }
+  .agent:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 5px 5px 0 var(--ink);
+    background: var(--paper-deep);
+  }
+  .agent:nth-child(odd) { transform: rotate(-0.5deg); }
+  .agent:nth-child(even) { transform: rotate(0.3deg); }
+  .agent:hover { transform: translate(-3px, -3px) rotate(0deg); }
+  .agent-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: #888;
+    margin-bottom: 6px;
+  }
+  .agent h4 {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 40, "WONK" 1;
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    line-height: 1.1;
+  }
+  .agent p {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+  }
+  .agent-tool {
+    margin-top: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+  }
+
+  /* ========== PUBLICATIONS ========== */
+  .pub-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .pub {
+    padding: 28px 0;
+    border-top: 1px solid rgba(15,15,12,0.2);
+    display: grid;
+    grid-template-columns: 100px 1fr 140px;
+    gap: 32px;
+    align-items: start;
+  }
+  .pub:last-child { border-bottom: 1px solid rgba(15,15,12,0.2); }
+  .pub-venue {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding-top: 4px;
+  }
+  .pub-venue span {
+    display: block;
+    color: var(--accent);
+    font-size: 20px;
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    letter-spacing: 0;
+    margin-top: 2px;
+  }
+  .pub h3 {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 40, "WONK" 0;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.25;
+    margin-bottom: 8px;
+    max-width: 640px;
+  }
+  .pub-meta {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: #555;
+  }
+  .pub-year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-align: right;
+    padding-top: 6px;
+  }
+
+  /* ========== EDUCATION ========== */
+  .edu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .edu {
+    border: 2px solid var(--ink);
+    padding: 24px;
+    background: var(--paper);
+    position: relative;
+  }
+  .edu:nth-child(1) { background: var(--paper-deep); }
+  .edu:nth-child(2) { transform: translateY(16px); }
+  .edu:nth-child(3) { background: var(--accent-soft); transform: translateY(-8px); }
+  .edu-gpa {
+    position: absolute;
+    top: -12px; right: 20px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    letter-spacing: 0.1em;
+  }
+  .edu-degree {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: #666;
+    margin-bottom: 8px;
+  }
+  .edu-school {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 50, "WONK" 1;
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1.05;
+    margin-bottom: 12px;
+  }
+  .edu-location {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+  .edu-dates {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #666;
+  }
+
+  /* ========== CONTACT ========== */
+  .contact {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 80px 32px;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(244,239,230,0.08) 1px, transparent 0);
+    background-size: 3px 3px;
+    pointer-events: none;
+  }
+  .contact-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .contact h2 {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: "SOFT" 80, "WONK" 1, "opsz" 144;
+    font-size: clamp(60px, 10vw, 180px);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+  .contact h2 em {
+    font-family: 'Instrument Serif', serif;
+    color: var(--accent);
+    font-weight: 400;
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 40px;
+  }
+  .contact-info p {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    line-height: 1.5;
+    max-width: 500px;
+    opacity: 0.9;
+  }
+  .contact-links {
+    list-style: none;
+  }
+  .contact-links li {
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(244,239,230,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .contact-links a {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    color: var(--paper);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.2s, letter-spacing 0.2s;
+  }
+  .contact-links a:hover {
+    color: var(--accent);
+    letter-spacing: 0.01em;
+  }
+  .contact-links .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    opacity: 0.5;
+  }
+
+  .footer {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 32px;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(244,239,230,0.4);
+    border-top: 1px solid rgba(244,239,230,0.2);
+  }
+
+  /* ========== FLOATING STAMP ========== */
+  .stamp {
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    padding: 8px 14px;
+    transform: rotate(-8deg);
+    font-weight: 700;
+    background: var(--paper);
+  }
+
+  /* ========== REVEAL ANIMATION ========== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 900px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .hero-card { transform: none; max-width: 400px; }
+    .about-grid { grid-template-columns: 1fr; }
+    .work-item { grid-template-columns: 60px 1fr; }
+    .work-meta { grid-column: 2; text-align: left; margin-top: 8px; }
+    .pub { grid-template-columns: 1fr; gap: 12px; }
+    .pub-year { text-align: left; }
+    .edu-grid { grid-template-columns: 1fr; }
+    .edu:nth-child(2), .edu:nth-child(3) { transform: none; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .section { padding: 56px 24px; }
+    .hero { padding: 40px 24px 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div>
+      <span class="brand">RSK</span> &nbsp;/&nbsp; rakshith sriraman krishnaraj
+    </div>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+      <a href="#work">work</a>
+      <a href="#agents">genie</a>
+      <a href="#pubs">publications</a>
+      <a href="#edu">education</a>
+      <a href="#contact">contact</a>
+    </div>
+    <div>
+      <span class="status-dot"></span>open to summer 2026 internships
+    </div>
+  </div>
+</div>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="issue-label">
+    <span>ISSUE N°01 — THE PORTFOLIO</span>
+    <span>MADISON, WI · EST. 2025</span>
+    <span>VOL. I</span>
+  </div>
+
+  <div class="hero-grid">
+    <div>
+      <h1>
+        I build <span class="accent">agentic</span><br>
+        systems that <span class="strike">almost</span><br>
+        always <em style="font-family: 'Instrument Serif', serif; font-style: italic;">work.</em>
+      </h1>
+      <p class="hero-sub">
+        Graduate student at UW-Madison. Former data engineer shipping
+        RAG pipelines &amp; multi-agent orchestrators at Accenture. I like
+        distributed systems, vector search, and the specific brand of pain
+        that comes with making LLMs behave in production.
+      </p>
+
+      <div class="tag-swarm">
+        <span class="tag filled">ms cs @ uw-madison</span>
+        <span class="tag">python · typescript · java</span>
+        <span class="tag">milvus · postgres · kafka</span>
+        <span class="tag">openai · fastapi · react</span>
+        <span class="tag">aws · gcp · azure</span>
+        <span class="tag">2 publications</span>
+        <span class="tag">4.0 gpa</span>
+      </div>
+    </div>
+
+    <aside class="hero-card">
+      <ul>
+        <li><span class="bullet">▸</span><span>building: multi-agent retrieval systems</span></li>
+        <li><span class="bullet">▸</span><span>learning: foundation models, trustworthy AI</span></li>
+        <li><span class="bullet">▸</span><span>reading: papers on agent orchestration</span></li>
+        <li><span class="bullet">▸</span><span>location: madison, WI &middot; 43.07°N</span></li>
+        <li><span class="bullet">▸</span><span>status: <em style="color: var(--green)">available may 2026</em></span></li>
+      </ul>
+    </aside>
+  </div>
+</header>
+
+<!-- ============ ABOUT ============ -->
+<section class="section" id="about">
+  <div class="section-label">§ 01 — Premise</div>
+  <h2 class="section-title">A short story about <em>scaling</em> messy financial data down to something queryable.</h2>
+
+  <div class="about-grid">
+    <div class="about-prose reveal">
+      <p>
+        Two years ago, I inherited a RAG pipeline at Accenture that took
+        <strong>five days</strong> to ingest a batch of financial documents.
+        Five. Days. Analysts would kick off a run on Monday and pray on
+        Friday.
+      </p>
+      <p class="pull">
+        &ldquo;The interesting work in AI right now isn't the model — it's
+        the plumbing around it.&rdquo;
+      </p>
+      <p>
+        I rebuilt it as a distributed framework with a tiered embedding
+        strategy, delta collection promotion in Milvus, and a Parquet-based
+        reprocessing loop for the inevitable failures. The 5-day job became
+        a <strong>24-hour job</strong>. Query accuracy hit 95%. Analysts
+        stopped praying.
+      </p>
+      <p>
+        Then I built <em>Genie</em> — a seven-agent orchestrator that sits
+        on top of it. That's what you should probably ask me about.
+      </p>
+    </div>
+
+    <div class="stat-grid reveal">
+      <div class="stat">
+        <div class="stat-num">80%</div>
+        <div class="stat-label">runtime cut</div>
+        <div class="stat-desc">5 days → 24 hours</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">95%</div>
+        <div class="stat-label">retrieval acc.</div>
+        <div class="stat-desc">on financial docs</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">500+</div>
+        <div class="stat-label">daily queries</div>
+        <div class="stat-desc">production load</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100h</div>
+        <div class="stat-label">analyst time / mo</div>
+        <div class="stat-desc">saved via CI/CD</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WORK ============ -->
+<section class="section" id="work">
+  <div class="section-label">§ 02 — Things I've built</div>
+  <h2 class="section-title">Select <em>work.</em></h2>
+
+  <div class="work-list">
+    <article class="work-item reveal">
+      <div class="work-index">N° 01</div>
+      <div class="work-main">
+        <h3>Distributed <em>RAG</em> Ingestion Framework</h3>
+        <p class="work-desc">
+          A high-volume financial document pipeline. FastAPI + Flask services, a tiered BERT/Ada
+          embedding strategy, Milvus vector store with delta collection promotion for safe
+          deduplication, PostgreSQL for metadata &amp; audit, and Parquet-backed failure reprocessing.
+          Ran 5 days, now runs 24 hours.
+        </p>
+        <p class="work-stack">python · fastapi · milvus · postgres · openai · azure · parquet</p>
+      </div>
+      <div class="work-meta">
+        <div class="work-year">2023 — 2025</div>
+        <div class="work-role">@ Accenture</div>
+        <div class="work-arrow">→</div>
+      </div>
+    </article>
+
+    <article class="work-item reveal">
+      <div class="work-index">N° 02</div>
+      <div class="work-main">
+        <h3>Genie <em>— multi-agent orchestrator</em></h3>
+        <p class="work-desc">
+          Seven specialized agents, ~6 tools each, sitting on top of the RAG pipeline. Query
+          clarifier, reasoning agent for multi-intent decomposition, a 3-stage Macro KPI resolver,
+          hybrid Milvus+Postgres retrieval, master company collection for entity resolution, web
+          crawler fallback, and proper source citations. Serves 3,000+ company profiles.
+        </p>
+        <p class="work-stack">multi-agent · intent classification · hybrid retrieval · entity resolution</p>
+      </div>
+      <div class="work-meta">
+        <div class="work-year">2024 — 2025</div>
+        <div class="work-role">@ Accenture</div>
+        <div class="work-arrow">→</div>
+      </div>
+    </article>
+
+    <article class="work-item reveal">
+      <div class="work-index">N° 03</div>
+      <div class="work-main">
+        <h3>Distributed Weather <em>Streaming</em> System</h3>
+        <p class="work-desc">
+          A Kafka-based real-time pipeline pushing 10 msg/sec across 4 partitions. Protobuf
+          serialization, offset checkpointing, atomic writes, and crash recovery to hit
+          exactly-once semantics. The kind of project that teaches you to love idempotent consumers.
+        </p>
+        <p class="work-stack">kafka · grpc · protobuf · docker · exactly-once</p>
+      </div>
+      <div class="work-meta">
+        <div class="work-year">Fall 2025</div>
+        <div class="work-role">Coursework</div>
+        <div class="work-arrow">→</div>
+      </div>
+    </article>
+
+    <article class="work-item reveal">
+      <div class="work-index">N° 04</div>
+      <div class="work-main">
+        <h3>Azure DevOps <em>CI/CD</em> Orchestrator</h3>
+        <p class="work-desc">
+          Cross-functional infra work with the finance &amp; analytics teams to automate end-to-end
+          financial data retrieval. Saved ~100 analyst hours a month, which is either a lot of
+          dashboards or a lot of coffee breaks, depending on who you ask.
+        </p>
+        <p class="work-stack">azure devops · ci/cd · python · automation</p>
+      </div>
+      <div class="work-meta">
+        <div class="work-year">2024</div>
+        <div class="work-role">@ Accenture</div>
+        <div class="work-arrow">→</div>
+      </div>
+    </article>
+
+    <article class="work-item reveal">
+      <div class="work-index">N° 05</div>
+      <div class="work-main">
+        <h3>OC-OTEC <em>Deep Learning</em> Control System</h3>
+        <p class="work-desc">
+          An LSTM-based disturbance rejection controller for an ocean thermal energy plant in
+          Lakshadweep. 98.6% sea surface temperature prediction accuracy, 30% power fluctuation
+          reduction. Ended up as a JWPE publication. Also the only project on this list that
+          involves an actual ocean.
+        </p>
+        <p class="work-stack">lstm · matlab · mpc · time-series · research</p>
+      </div>
+      <div class="work-meta">
+        <div class="work-year">2022 — 2023</div>
+        <div class="work-role">@ NIOT</div>
+        <div class="work-arrow">→</div>
+      </div>
+    </article>
+  </div>
+
+  <!-- ============ PIPELINE VIS ============ -->
+  <div class="pipeline-wrap reveal">
+    <div class="pipeline-flow">
+      <div class="node">
+        <span class="n-icon">☁</span>
+        GCP / AWS
+        <span class="n-sub">source</span>
+      </div>
+      <div class="arrow">━━▶</div>
+      <div class="node">
+        <span class="n-icon">⇩</span>
+        AzCopy
+        <span class="n-sub">transfer</span>
+      </div>
+      <div class="arrow">━━▶</div>
+      <div class="node">
+        <span class="n-icon">▣</span>
+        Azure Blob
+        <span class="n-sub">staging</span>
+      </div>
+      <div class="arrow">━━▶</div>
+      <div class="node">
+        <span class="n-icon">⊹</span>
+        Dedup
+        <span class="n-sub">manifest</span>
+      </div>
+      <div class="arrow">━━▶</div>
+      <div class="node accent">
+        <span class="n-icon">◉</span>
+        BERT / Ada
+        <span class="n-sub">tiered embed</span>
+      </div>
+      <div class="arrow">━━▶</div>
+      <div class="node">
+        <span class="n-icon">⬢</span>
+        Milvus Δ
+        <span class="n-sub">delta coll.</span>
+      </div>
+      <div class="arrow">━━▶</div>
+      <div class="node">
+        <span class="n-icon">◆</span>
+        Postgres
+        <span class="n-sub">metadata</span>
+      </div>
+      <div class="arrow">━━▶</div>
+      <div class="node">
+        <span class="n-icon">✓</span>
+        Promote
+        <span class="n-sub">to prod</span>
+      </div>
+    </div>
+    <p class="pipeline-caption">Delta collections let us hot-swap without blocking queries. Failed docs go to a Parquet manifest for replay.</p>
+  </div>
+</section>
+
+<!-- ============ GENIE / AGENTS ============ -->
+<section class="section" id="agents">
+  <div class="section-label">§ 03 — Genie, up close</div>
+  <h2 class="section-title">Seven agents <em>walk into</em> a financial query.</h2>
+
+  <p class="agents-intro">
+    Each agent has a narrow job and about six tools. The system is a polite argument between
+    them, moderated by a <em>reasoning agent</em> that decides what a user actually wants when
+    they ask something vague like <span class="italic-serif">&ldquo;how did we do last quarter?&rdquo;</span>
+  </p>
+
+  <div class="agent-grid">
+    <div class="agent reveal">
+      <div class="agent-num">AGENT 01</div>
+      <h4>Query Clarifier</h4>
+      <p>First line of defense. Catches under-specified prompts before they poison downstream retrieval.</p>
+      <div class="agent-tool">tools · 4</div>
+    </div>
+    <div class="agent reveal">
+      <div class="agent-num">AGENT 02</div>
+      <h4>Reasoning Agent</h4>
+      <p>Decomposes multi-intent queries into ordered sub-queries. Routes to specialist agents.</p>
+      <div class="agent-tool">tools · 7</div>
+    </div>
+    <div class="agent reveal">
+      <div class="agent-num">AGENT 03</div>
+      <h4>Entity Resolver</h4>
+      <p>Hits the master company collection to disambiguate &ldquo;Apple&rdquo; from &ldquo;Apple Hospitality REIT.&rdquo;</p>
+      <div class="agent-tool">tools · 5</div>
+    </div>
+    <div class="agent reveal">
+      <div class="agent-num">AGENT 04</div>
+      <h4>Macro KPI Agent</h4>
+      <p>3-stage pipeline: entity extraction → KPI taxonomy lookup → SQL generation. My favorite.</p>
+      <div class="agent-tool">tools · 6</div>
+    </div>
+    <div class="agent reveal">
+      <div class="agent-num">AGENT 05</div>
+      <h4>Vector Retriever</h4>
+      <p>Milvus-side semantic search across 3,000+ company profiles. Knows when to widen top-k.</p>
+      <div class="agent-tool">tools · 5</div>
+    </div>
+    <div class="agent reveal">
+      <div class="agent-num">AGENT 06</div>
+      <h4>Web Fallback</h4>
+      <p>When internal sources come up dry, this agent crawls. Cites aggressively.</p>
+      <div class="agent-tool">tools · 6</div>
+    </div>
+    <div class="agent reveal">
+      <div class="agent-num">AGENT 07</div>
+      <h4>Synthesizer</h4>
+      <p>Merges retrieved evidence, enforces citation formatting, catches hallucinations pre-response.</p>
+      <div class="agent-tool">tools · 7</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PUBLICATIONS ============ -->
+<section class="section" id="pubs">
+  <div class="section-label">§ 04 — On the record</div>
+  <h2 class="section-title"><em>Published</em> work.</h2>
+
+  <div class="pub-list">
+    <div class="pub reveal">
+      <div class="pub-venue">JOURNAL<span>JWPE</span></div>
+      <div>
+        <h3>Decentralized Control Strategies with Predictive Disturbance Rejection for OC-OTEC Plant in Lakshadweep Using Deep Learning</h3>
+        <p class="pub-meta">Deep-learning driven decentralized control for a lab-scale OC-OTEC plant. 98.6% SST prediction accuracy; &gt;30% reduction in power fluctuations.</p>
+      </div>
+      <div class="pub-year">2024</div>
+    </div>
+
+    <div class="pub reveal">
+      <div class="pub-venue">CONF.<span>IEEE</span></div>
+      <div>
+        <h3>Multiple Hybrid AI Model-based Optimal Charging Profile of Lithium-ion Battery for SOH Enhancement</h3>
+        <p class="pub-meta">Hybrid AI models for 18650 Li-ion cells. Up to 30% faster charging, 12% lower temperature rise.</p>
+      </div>
+      <div class="pub-year">2023</div>
+    </div>
+
+    <div class="pub reveal">
+      <div class="pub-venue">CONF.<span>IEEE</span></div>
+      <div>
+        <h3>Data-driven Model Development and Validation for Laboratory Scale OC-OTEC Plant</h3>
+        <p class="pub-meta">Linear data-driven SISO/MIMO models for OC-OTEC processes using real-time lab data from NIOT. 50% efficiency improvement.</p>
+      </div>
+      <div class="pub-year">2022</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EDUCATION ============ -->
+<section class="section" id="edu">
+  <div class="section-label">§ 05 — Formal training</div>
+  <h2 class="section-title">Where I <em>studied.</em></h2>
+
+  <div class="edu-grid">
+    <div class="edu reveal">
+      <div class="edu-gpa">GPA 4.0</div>
+      <div class="edu-degree">M.S. · COMPUTER SCIENCE</div>
+      <div class="edu-school">UW-Madison</div>
+      <div class="edu-location">Madison, Wisconsin</div>
+      <div class="edu-dates">Aug 2025 — May 2027</div>
+    </div>
+
+    <div class="edu reveal">
+      <div class="edu-gpa">GPA 3.87</div>
+      <div class="edu-degree">B.E. · E &amp; I</div>
+      <div class="edu-school">Anna University — MIT</div>
+      <div class="edu-location">Chennai, India</div>
+      <div class="edu-dates">Aug 2019 — May 2023</div>
+    </div>
+
+    <div class="edu reveal">
+      <div class="edu-gpa">GPA 3.92</div>
+      <div class="edu-degree">EXCHANGE SEMESTER</div>
+      <div class="edu-school">Univ. of Tours</div>
+      <div class="edu-location">Tours, France</div>
+      <div class="edu-dates">Aug 2021 — Feb 2022</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <h2>Let's <em>build</em><br>something.</h2>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <p>
+          I'm looking for summer 2026 software engineering internships — especially
+          AI infra, agentic systems, or anything where the data pipeline is the hard part.
+          If that's your team, drop me a line.
+        </p>
+      </div>
+      <ul class="contact-links">
+        <li>
+          <span class="label">EMAIL</span>
+          <a href="mailto:rakshith.rsk@gmail.com">rakshith.rsk@gmail.com</a>
+        </li>
+        <li>
+          <span class="label">PHONE</span>
+          <a href="tel:+16086588669">+1 (608) 658-8669</a>
+        </li>
+        <li>
+          <span class="label">LINKEDIN</span>
+          <a href="https://linkedin.com/in/rakshith-s-k" target="_blank" rel="noopener">rakshith-s-k</a>
+        </li>
+        <li>
+          <span class="label">GITHUB</span>
+          <a href="https://github.com/Rak28" target="_blank" rel="noopener">@Rak28</a>
+        </li>
+        <li>
+          <span class="label">SCHOLAR</span>
+          <a href="#" target="_blank" rel="noopener">Rakshith S K</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer">
+    <div>© 2026 · RAKSHITH SRIRAMAN KRISHNARAJ</div>
+    <div>SET IN FRAUNCES, INSTRUMENT SERIF &amp; JETBRAINS MONO</div>
+    <div>MADE IN MADISON, WI</div>
+  </div>
+</section>
+
+<script>
+  // scroll reveal
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('in'), i * 80);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // tiny easter egg: click the status dot to say hi
+  document.querySelector('.status-dot')?.addEventListener('click', () => {
+    alert("hi! you found the dot. email me: rakshith.rsk@gmail.com");
+  });
+</script>
+</body>
+</html>
