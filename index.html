@@ -5,6 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Rakshith S.K. — builds RAG pipelines &amp; agentic systems</title>
 <meta name="description" content="Rakshith Sriraman Krishnaraj — MS CS @ UW-Madison. I build multi-agent RAG systems, distributed data pipelines, and the occasional Kafka streaming rig." />
+<meta name="author" content="Rakshith Sriraman Krishnaraj" />
+<meta name="theme-color" content="#ff5a1f" />
+
+<!-- Open Graph (LinkedIn, Slack, Discord, Facebook) -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://rak28.github.io/" />
+<meta property="og:title" content="Rakshith S.K. — builds RAG pipelines &amp; agentic systems" />
+<meta property="og:description" content="MS CS @ UW-Madison. Former data engineer shipping RAG pipelines &amp; multi-agent orchestrators. Looking for Summer 2026 SWE internships." />
+<meta property="og:image" content="https://rak28.github.io/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:site_name" content="Rakshith S.K." />
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Rakshith S.K. — builds RAG pipelines &amp; agentic systems" />
+<meta name="twitter:description" content="MS CS @ UW-Madison. Multi-agent RAG systems, distributed data pipelines, Kafka streaming. Looking for Summer 2026 SWE internships." />
+<meta name="twitter:image" content="https://rak28.github.io/og-image.png" />
+
+<!-- Favicon (inline SVG, monogram in accent color) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230f0f0c' rx='18'/%3E%3Ctext x='50' y='70' font-family='Georgia, serif' font-size='64' font-weight='500' fill='%23ff5a1f' text-anchor='middle' font-style='italic'%3ER%3C/text%3E%3C/svg%3E" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230f0f0c' rx='18'/%3E%3Ctext x='50' y='70' font-family='Georgia, serif' font-size='64' font-weight='500' fill='%23ff5a1f' text-anchor='middle' font-style='italic'%3ER%3C/text%3E%3C/svg%3E" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -727,6 +750,78 @@
     background: var(--paper);
   }
 
+  /* ========== CTA BUTTONS ========== */
+  .cta-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .btn.secondary {
+    background: transparent;
+    color: var(--ink);
+  }
+  .btn.secondary:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .btn svg { width: 14px; height: 14px; }
+
+  /* ========== WORK LINKS ========== */
+  .work-links {
+    display: flex;
+    gap: 14px;
+    margin-top: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+  .work-links a {
+    color: var(--ink);
+    text-decoration: none;
+    padding: 4px 10px;
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.15s;
+  }
+  .work-links a:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .work-links a.nda {
+    border-style: dashed;
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+  }
+  .work-links svg { width: 12px; height: 12px; }
+
   /* ========== REVEAL ANIMATION ========== */
   .reveal {
     opacity: 0;
@@ -806,6 +901,17 @@
         <span class="tag">aws · gcp · azure</span>
         <span class="tag">2 publications</span>
         <span class="tag">4.0 gpa</span>
+      </div>
+
+      <div class="cta-row">
+        <a class="btn" href="resume.pdf" download="Rakshith_SK_Resume.pdf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Resume
+        </a>
+        <a class="btn secondary" href="mailto:rakshith.rsk@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Get in Touch
+        </a>
       </div>
     </div>
 
@@ -893,6 +999,12 @@
           Ran 5 days, now runs 24 hours.
         </p>
         <p class="work-stack">python · fastapi · milvus · postgres · openai · azure · parquet</p>
+        <div class="work-links">
+          <a class="nda" title="Proprietary — built at Accenture">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            proprietary
+          </a>
+        </div>
       </div>
       <div class="work-meta">
         <div class="work-year">2023 — 2025</div>
@@ -912,6 +1024,12 @@
           crawler fallback, and proper source citations. Serves 3,000+ company profiles.
         </p>
         <p class="work-stack">multi-agent · intent classification · hybrid retrieval · entity resolution</p>
+        <div class="work-links">
+          <a class="nda" title="Proprietary — built at Accenture">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            proprietary
+          </a>
+        </div>
       </div>
       <div class="work-meta">
         <div class="work-year">2024 — 2025</div>
@@ -930,6 +1048,12 @@
           exactly-once semantics. The kind of project that teaches you to love idempotent consumers.
         </p>
         <p class="work-stack">kafka · grpc · protobuf · docker · exactly-once</p>
+        <div class="work-links">
+          <a href="https://github.com/Rak28/weather-streaming" target="_blank" rel="noopener" title="View on GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.42 7.86 10.95.58.1.79-.25.79-.55v-2.1c-3.2.7-3.87-1.37-3.87-1.37-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.72-1.52-2.55-.29-5.24-1.27-5.24-5.67 0-1.25.45-2.28 1.18-3.08-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a11 11 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.73.8 1.18 1.83 1.18 3.08 0 4.41-2.69 5.38-5.25 5.66.41.36.78 1.06.78 2.14v3.17c0 .3.21.66.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+            view on github
+          </a>
+        </div>
       </div>
       <div class="work-meta">
         <div class="work-year">Fall 2025</div>
@@ -948,6 +1072,12 @@
           dashboards or a lot of coffee breaks, depending on who you ask.
         </p>
         <p class="work-stack">azure devops · ci/cd · python · automation</p>
+        <div class="work-links">
+          <a class="nda" title="Proprietary — built at Accenture">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            proprietary
+          </a>
+        </div>
       </div>
       <div class="work-meta">
         <div class="work-year">2024</div>
@@ -967,6 +1097,16 @@
           involves an actual ocean.
         </p>
         <p class="work-stack">lstm · matlab · mpc · time-series · research</p>
+        <div class="work-links">
+          <a href="#pubs" title="See publication">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            JWPE 2024
+          </a>
+          <a href="https://github.com/Rak28" target="_blank" rel="noopener" title="GitHub profile">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.42 7.86 10.95.58.1.79-.25.79-.55v-2.1c-3.2.7-3.87-1.37-3.87-1.37-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.72-1.52-2.55-.29-5.24-1.27-5.24-5.67 0-1.25.45-2.28 1.18-3.08-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a11 11 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.73.8 1.18 1.83 1.18 3.08 0 4.41-2.69 5.38-5.25 5.66.41.36.78 1.06.78 2.14v3.17c0 .3.21.66.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+            github.com/Rak28
+          </a>
+        </div>
       </div>
       <div class="work-meta">
         <div class="work-year">2022 — 2023</div>
